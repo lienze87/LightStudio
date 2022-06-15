@@ -1,0 +1,28 @@
+{
+  "name": "lightstudio",
+  "version": "1.0.0",
+  "description": "3d based on three.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lienze87/LightStudio.git"
+  },
+  "keywords": [
+    "3d",
+    "three.js"
+  ],
+  "author": "lienze",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lienze87/LightStudio/issues"
+  },
+  "homepage": "https://github.com/lienze87/LightStudio#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "three": "^0.141.0"
+  }
+}
