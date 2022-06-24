@@ -8,6 +8,7 @@ body {
   height: 100vh;
   text-align: center;
   background-color: #f2f2f2;
+  overflow: hidden;
 }
 
 .header {
@@ -21,7 +22,7 @@ body {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: calc(100% - 60px);
+  height: calc(100% - 100px);
 }
 
 .left-sidebar {

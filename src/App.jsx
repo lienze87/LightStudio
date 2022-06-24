@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { camera, initScene } from "./index.js";
 
 function App() {
-  const [count, setCount] = useState(0);
+  useEffect(() => {
+    initScene();
+  }, []);
 
+  function getCameraStatus() {
+    console.log(camera.position);
+  }
   return (
     <>
       <div className="header">
         <p>React+Vite+ThreeJS</p>
-        <button type="button" onClick={() => setCount((count) => count + 1)}>
-          count is: {count}
+        <button type="button" onClick={() => getCameraStatus()}>
+          camera position
         </button>
       </div>
       <div id="content">
