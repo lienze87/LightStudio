@@ -13,7 +13,7 @@ camera.position.z = 5;
 const renderer = new THREE.WebGLRenderer();
 
 // 渲染器
-function initRenderDom(render) {
+function initRenderDom() {
   const domContainer = document.getElementById("myCanvas");
   function initDomContainer() {
     let box = domContainer.getBoundingClientRect();
@@ -53,12 +53,7 @@ function addArrowHelper(scene, flag = "x") {
   scene.add(arrowHelper);
 }
 
-// 简易坐标轴
-function addAxesHelper(scene) {
-  const axesHelper = new THREE.AxesHelper(5);
-  scene.add(axesHelper);
-}
-
+// 方格坐标系
 function addGridHelper(scene) {
   const size = 10;
   const divisions = 10;
@@ -67,8 +62,13 @@ function addGridHelper(scene) {
   scene.add(gridHelper);
 }
 
-function initScene() {
-  initRenderDom(renderer);
+// 初始化场景
+function initScene(renderWithFrame, initFinished) {
+  if (scene.children.length > 0) {
+    console.log("init finished.");
+    return;
+  }
+  initRenderDom();
 
   // 摄像机控制器
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -77,23 +77,22 @@ function initScene() {
   controls.enablePan = false;
   controls.enableDamping = true;
 
-  // 立方体
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-
-  // addAxesHelper(scene);
   addGridHelper(scene);
   addArrowHelper(scene, "x");
   addArrowHelper(scene, "y");
   addArrowHelper(scene, "z");
 
+  if (initFinished instanceof Function) {
+    initFinished();
+  }
+
+  // 实时渲染
   function animate() {
     requestAnimationFrame(animate);
 
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    if (renderWithFrame instanceof Function) {
+      renderWithFrame();
+    }
     controls.update();
     renderer.render(scene, camera);
   }
