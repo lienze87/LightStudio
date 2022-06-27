@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { camera, initScene, scene } from "./index.js";
+import { camera, initScene, scene } from "./render.js";
 
 function App() {
   // 立方体
