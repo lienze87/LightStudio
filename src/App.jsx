@@ -33,29 +33,25 @@ function App() {
   }
 
   return (
-    <>
-      <div className="header">
-        <p>React+Vite+ThreeJS</p>
-        <button type="button" onClick={() => getCameraStatus()}>
-          camera position
-        </button>
-      </div>
-      <div id="content">
-        <div className="left-sidebar">
-          <p>scene children</p>
+    <div id="content">
+      <button type="button" onClick={() => getCameraStatus()}>
+        camera position
+      </button>
+      <div className="right-sidebar">
+        <div className="com">
+          <p className="com-title">scene children</p>
           {objList.map((ele) => (
             <p key={ele.uuid}>{ele.type}</p>
           ))}
         </div>
-        <div id="myCanvas" className="main-canvas"></div>
-        <div className="right-sidebar">
-          <p>cube rotation</p>
+        <div className="com">
+          <p className="com-title">cube rotation</p>
           <p>x: {rotation[0].toFixed(3)}</p>
           <p>y: {rotation[1].toFixed(3)}</p>
           <p>z: {rotation[2].toFixed(3)}</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

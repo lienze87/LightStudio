@@ -1,27 +1,27 @@
 import * as THREE from "three";
 import { OrbitControls } from "./lib/jsm/controls/OrbitControls.js";
+import Stats from "./lib/jsm/libs/stats.module.js";
 
-const scene = new THREE.Scene();
+let SCREEN_WIDTH = window.innerWidth - 300;
+let SCREEN_HEIGHT = window.innerHeight;
+const NEAR = 0.01,
+  FAR = 1000;
 const camera = new THREE.PerspectiveCamera(
   75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+  SCREEN_WIDTH / SCREEN_HEIGHT,
+  NEAR,
+  FAR
 );
-camera.position.z = 5;
-
-const renderer = new THREE.WebGLRenderer();
-
-// 渲染器
-function initRenderDom() {
-  const domContainer = document.getElementById("myCanvas");
-  function initDomContainer() {
-    let box = domContainer.getBoundingClientRect();
-    renderer.setSize(box.width, box.height - 20);
-    domContainer.appendChild(renderer.domElement);
-  }
-  initDomContainer();
-}
+camera.position.set(1.6, 6.4, 5.7);
+const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+const container = document.createElement("div");
+container.id = "MyCanvas";
+let controls = null;
+let stats = null;
+let showShadow = true;
 
 // 箭头坐标轴
 function addArrowHelper(scene, flag = "x") {
@@ -54,7 +54,7 @@ function addArrowHelper(scene, flag = "x") {
 }
 
 // 方格坐标系
-function addGridHelper(scene) {
+function addGridHelper() {
   const size = 10;
   const divisions = 10;
 
@@ -64,41 +64,69 @@ function addGridHelper(scene) {
 
 // 初始化场景
 function initScene(renderWithFrame, initFinished) {
-  if (scene.children.length > 0) {
+  if (document.getElementById("MyCanvas")) {
     console.log("init finished.");
     return;
   }
-  initRenderDom();
+  document.body.appendChild(container);
+  container.appendChild(renderer.domElement);
 
   // 摄像机控制器
-  const controls = new OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 0.5, 0);
   controls.update();
   controls.enablePan = false;
   controls.enableDamping = true;
 
-  addGridHelper(scene);
+  stats = new Stats();
+  // container.appendChild(stats.dom);
+
+  addGridHelper();
   addArrowHelper(scene, "x");
   addArrowHelper(scene, "y");
   addArrowHelper(scene, "z");
 
-  if (initFinished instanceof Function) {
+  renderer.shadowMap.enabled = showShadow;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+
+  if (initFinished && initFinished instanceof Function) {
     initFinished();
   }
+
+  window.addEventListener("resize", onWindowResize);
+  window.addEventListener("keydown", onKeyDown);
 
   // 实时渲染
   function animate() {
     requestAnimationFrame(animate);
 
-    if (renderWithFrame instanceof Function) {
+    if (renderWithFrame && renderWithFrame instanceof Function) {
       renderWithFrame();
     }
+    stats.update();
     controls.update();
     renderer.render(scene, camera);
   }
 
   animate();
 }
-//initScene();
+
+function onWindowResize() {
+  SCREEN_WIDTH = window.innerWidth - 300;
+  SCREEN_HEIGHT = window.innerHeight;
+
+  camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+}
+
+function onKeyDown(event) {
+  switch (event.keyCode) {
+    case 84 /*t*/:
+      showShadow = !showShadow;
+      break;
+  }
+}
 
 export { scene, camera, renderer, initScene };
