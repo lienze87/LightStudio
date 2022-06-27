@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "./lib/jsm/controls/OrbitControls.js";
 import Stats from "./lib/jsm/libs/stats.module.js";
 
-let SCREEN_WIDTH = window.innerWidth - 300;
+const OFFSET_RIGHT = 300;
+let SCREEN_WIDTH = window.innerWidth - OFFSET_RIGHT;
 let SCREEN_HEIGHT = window.innerHeight;
 const NEAR = 0.01,
   FAR = 1000;
@@ -112,7 +113,7 @@ function initScene(renderWithFrame, initFinished) {
 }
 
 function onWindowResize() {
-  SCREEN_WIDTH = window.innerWidth - 300;
+  SCREEN_WIDTH = window.innerWidth - OFFSET_RIGHT;
   SCREEN_HEIGHT = window.innerHeight;
 
   camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
