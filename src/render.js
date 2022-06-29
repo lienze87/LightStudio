@@ -18,6 +18,9 @@ const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
 const container = document.createElement("div");
 container.id = "MyCanvas";
 let controls = null;
@@ -48,7 +51,7 @@ function addArrowHelper(scene, flag = "x") {
   dir.normalize();
 
   const origin = new THREE.Vector3(0, 0, 0);
-  const length = 2;
+  const length = 5;
 
   const arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
   scene.add(arrowHelper);
@@ -95,15 +98,19 @@ function initScene(renderWithFrame, initFinished) {
   }
 
   window.addEventListener("resize", onWindowResize);
+  window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("keydown", onKeyDown);
 
   // 实时渲染
   function animate() {
     requestAnimationFrame(animate);
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
 
     if (renderWithFrame && renderWithFrame instanceof Function) {
-      renderWithFrame();
+      renderWithFrame(intersects);
     }
+
     stats.update();
     controls.update();
     renderer.render(scene, camera);
@@ -122,12 +129,24 @@ function onWindowResize() {
   renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
+function onPointerMove(event) {
+  // 将鼠标位置归一化为设备坐标。x 和 y 方向的取值范围是 (-1 to +1)
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
 function onKeyDown(event) {
   switch (event.keyCode) {
     case 84 /*t*/:
       showShadow = !showShadow;
       break;
   }
+}
+
+// 移除对象
+function removeEntity(object) {
+  var selectedObject = scene.getObjectByName(object.name);
+  scene.remove(selectedObject);
 }
 
 export { scene, camera, renderer, initScene };
